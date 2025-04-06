@@ -1,6 +1,6 @@
 # Control Music
 
-![Control Music Logo]([https://cdn-icons-png.flaticon.com/512/10268/10268970.png])
+<img src="https://cdn-icons-png.flaticon.com/512/10268/10268970.png" alt="Логотип Control Music" width="80" height="auto" />
 
 ## Описание
 
