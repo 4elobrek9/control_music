@@ -230,15 +230,15 @@ class MusicControlApp:
         lang_menu.bind('<<ComboboxSelected>>', self.change_language)
         
         # Help text
-        tk.Label(
-            self.main_frame,
-            text=self.lang.tr('help_text'),
-            font=self.small_font,
-            fg='#AAAAAA',
-            bg='#1E1E1E',
-            justify='left',
-            wraplength=360
-        ).pack(pady=(0, 20))
+        # tk.Label(
+        #     self.main_frame,
+        #     text=self.lang.tr('help_text'),
+        #     font=self.small_font,
+        #     fg='#AAAAAA',
+        #     bg='#1E1E1E',
+        #     justify='left',
+        #     wraplength=360
+        # ).pack(pady=(0, 20))
         
         # Player selection
         tk.Label(
