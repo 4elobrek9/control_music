@@ -8,3 +8,4 @@ __pytcache__
 
 # logs
 *.log
+false_positives.txt
