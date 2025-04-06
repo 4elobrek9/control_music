@@ -1,6 +1,6 @@
 # Control Music
 
-![Control Music Logo]([https://via.placeholder.com/150](https://cdn-icons-png.flaticon.com/512/10268/10268970.png))
+![Control Music Logo]([https://cdn-icons-png.flaticon.com/512/10268/10268970.png])
 
 ## Описание
 
