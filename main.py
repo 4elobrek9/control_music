@@ -10,7 +10,6 @@ from PIL import Image, ImageTk
 import pystray
 import urllib.request
 
-# Настройки иконок
 MAIN_ICON_URL = "https://cdn-icons-png.flaticon.com/512/10268/10268970.png"
 HELP_ICON_URL = "https://cdn-icons-png.flaticon.com/512/447/447057.png"
 ICON_FILENAME = "music_control_icon.png"
@@ -191,11 +190,9 @@ class MusicControlApp:
         self.small_font = ('Helvetica', 9)
     
     def create_widgets(self):
-        # Main container
         self.main_frame = tk.Frame(self.master, bg='#1E1E1E')
         self.main_frame.pack(fill='both', expand=True, padx=20, pady=20)
         
-        # Title
         self.title_label = tk.Label(
             self.main_frame,
             text=self.lang.tr('title'),
@@ -205,7 +202,6 @@ class MusicControlApp:
         )
         self.title_label.pack(pady=(0, 20))
         
-        # Language selector
         lang_frame = tk.Frame(self.main_frame, bg='#1E1E1E')
         lang_frame.pack(fill='x', pady=(0, 10))
         
@@ -229,18 +225,6 @@ class MusicControlApp:
         lang_menu.pack(side='right')
         lang_menu.bind('<<ComboboxSelected>>', self.change_language)
         
-        # Help text
-        # tk.Label(
-        #     self.main_frame,
-        #     text=self.lang.tr('help_text'),
-        #     font=self.small_font,
-        #     fg='#AAAAAA',
-        #     bg='#1E1E1E',
-        #     justify='left',
-        #     wraplength=360
-        # ).pack(pady=(0, 20))
-        
-        # Player selection
         tk.Label(
             self.main_frame,
             text=self.lang.tr('select_player'),
@@ -261,7 +245,6 @@ class MusicControlApp:
         self.player_menu.pack(fill='x', pady=(0, 10))
         self.player_menu.bind('<<ComboboxSelected>>', self.on_player_select)
         
-        # Custom player entry
         self.custom_frame = tk.Frame(self.main_frame, bg='#1E1E1E')
         self.custom_label = tk.Label(
             self.custom_frame,
@@ -278,11 +261,9 @@ class MusicControlApp:
         )
         self.custom_entry.pack(fill='x', pady=(0, 10))
         
-        # Set initial custom player name if exists
         if self.player_var.get() and self.player_var.get() not in [self.lang.tr('player_v1'), self.lang.tr('player_v2')]:
             self.custom_entry.insert(0, self.player_var.get())
         
-        # Volume controls
         self.volumes = {
             'set_vol': {'label': self.lang.tr('start_vol'), 'value': tk.IntVar(value=int(self.cfg.get('set_vol', 50)))},
             'normal_vol': {'label': self.lang.tr('normal_vol'), 'value': tk.IntVar(value=int(self.cfg.get('normal_vol', 70)))}
@@ -315,7 +296,6 @@ class MusicControlApp:
             )
             scale.pack(side='right', fill='x', expand=True)
         
-        # Buttons
         btn_frame = tk.Frame(self.main_frame, bg='#1E1E1E')
         btn_frame.pack(fill='x', pady=(20, 0))
         
@@ -345,13 +325,11 @@ class MusicControlApp:
         )
         self.launch_btn.pack(side='right', fill='x', expand=True)
         
-        # Hover effects
         self.launch_btn.bind('<Enter>', lambda e: self.launch_btn.config(bg="#1ED760"))
         self.launch_btn.bind('<Leave>', lambda e: self.launch_btn.config(bg="#1DB954"))
         self.debug_btn.bind('<Enter>', lambda e: self.debug_btn.config(bg="#6D6D6D"))
         self.debug_btn.bind('<Leave>', lambda e: self.debug_btn.config(bg="#535353"))
         
-        # Help icon
         help_icon = tk.Label(
             self.main_frame,
             text=" ? ",
@@ -363,7 +341,6 @@ class MusicControlApp:
         help_icon.place(relx=1.0, rely=0.0, anchor='ne', x=-10, y=10)
         ToolTip(help_icon, self.lang.tr('help_text'))
         
-        # Initial player selection
         self.on_player_select()
     
     def on_player_select(self, event=None):
@@ -376,24 +353,19 @@ class MusicControlApp:
     def change_language(self, event):
         self.lang.set_lang(self.lang_var.get())
         
-        # Update all UI elements
         self.master.title(self.lang.tr('title'))
         self.title_label.config(text=self.lang.tr('title'))
         self.custom_label.config(text=self.lang.tr('custom_player_prompt'))
         
-        # Update player menu options
         players = [self.lang.tr('player_v1'), self.lang.tr('player_v2'), self.lang.tr('custom_player')]
         self.player_menu['values'] = players
         
-        # Update volume labels
         self.volumes['set_vol']['label'] = self.lang.tr('start_vol')
         self.volumes['normal_vol']['label'] = self.lang.tr('normal_vol')
         
-        # Update buttons
         self.launch_btn.config(text=self.lang.tr('launch'))
         self.debug_btn.config(text=self.lang.tr('debug'))
         
-        # Update tooltip
         for child in self.main_frame.winfo_children():
             if isinstance(child, tk.Label) and child['text'] == " ? ":
                 for handler in child.bindtags():
@@ -404,7 +376,6 @@ class MusicControlApp:
                         break
     
     def save_config(self):
-        # Save player version (use custom entry if custom selected)
         if self.player_var.get() == self.lang.tr('custom_player'):
             player_name = self.custom_entry.get()
             self.cfg.set('player_version', player_name)
@@ -433,7 +404,6 @@ class MusicControlApp:
         self.save_config()
         self.minimize_to_tray()
         
-        # Determine player executable
         if self.player_var.get() == self.lang.tr('player_v1'):
             player_exe = 'YandexMusic.exe'
         elif self.player_var.get() == self.lang.tr('player_v2'):
@@ -446,11 +416,9 @@ class MusicControlApp:
             return
         
         try:
-            # Hide console window (Windows only)
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             
-            # Launch gmain.py for debugging
             debug_process = subprocess.Popen(
                 [sys.executable, 'gmain.py'],
                 stdout=subprocess.PIPE,
@@ -459,7 +427,6 @@ class MusicControlApp:
                 startupinfo=startupinfo
             )
             
-            # Launch player
             subprocess.Popen(player_exe, shell=True, startupinfo=startupinfo)
         except Exception as e:
             messagebox.showerror(self.lang.tr('error'), f"{self.lang.tr('launch_error')}: {str(e)}")
@@ -485,7 +452,6 @@ class MusicControlApp:
         
         try:
             if self.debug_process is None:
-                # Read from gmain.py output
                 self.debug_process = subprocess.Popen(
                     [sys.executable, 'gmain.py'],
                     stdout=subprocess.PIPE,

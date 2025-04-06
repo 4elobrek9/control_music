@@ -6,29 +6,24 @@ from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 from loguru import logger
 import configparser
 
-# Загрузка конфигурации
 config = configparser.ConfigParser()
 config.read('config.ini', encoding='utf-8')
 
 SETTINGS = config['SETTINGS']
 
-# Основные настройки
 SET_VOL = float(SETTINGS.get('set_vol', '0'))
 NORMAL_VOL = float(SETTINGS.get('normal_vol', '100'))
 CHECK_INTERVAL = 0.5
 GAMES_FILE = 'games.txt'
 music = SETTINGS.get('player_version', 'Свой вариант')
 
-# Дополнительные параметры
 LANGUAGE = SETTINGS.get('language', 'ru')
 WINDOW_X = int(SETTINGS.get('window_x', '1326'))
 WINDOW_Y = int(SETTINGS.get('window_y', '436'))
 
 class VolumeController:
-    """Контроллер громкости музыкального плеера"""
     @staticmethod
     def set_volume(volume):
-        """Устанавливает громкость музыкального плеера"""
         sessions = AudioUtilities.GetAllSessions()
         for session in sessions:
             if session.Process and session.Process.name().lower() == music.lower():
@@ -41,7 +36,6 @@ class VolumeController:
 
 
 class ProcessMonitor:
-    """Мониторинг запущенных процессов"""
     def __init__(self):
         self.blacklist = {
             "locationnotificationwindows.exe",
@@ -55,14 +49,12 @@ class ProcessMonitor:
         }
 
     def is_music_player_running(self):
-        """Проверяет, запущен ли музыкальный плеер"""
         for proc in psutil.process_iter(['name']):
             if proc.info['name'].lower() == music.lower():
                 return True
         return False
 
     def is_game_running(self, games):
-        """Проверяет, запущена ли игра из списка"""
         false_positives = []
 
         for game in games:
@@ -85,7 +77,6 @@ class ProcessMonitor:
         return len(false_positives) > 0
 
     def is_youtube_opened(self):
-        """Проверяет, открыт ли YouTube в браузере"""
         try:
             browser_processes = []
             for proc in psutil.process_iter(['pid', 'name']):
@@ -137,14 +128,12 @@ class ProcessMonitor:
 
 
 class AppController:
-    """Главный контроллер приложения"""
     def __init__(self):
         self.monitor = ProcessMonitor()
         self.games = self.load_games()
         self.last_state = None
 
     def load_games(self):
-        """Загружает список игр из файла"""
         try:
             with open(GAMES_FILE, 'r', encoding='utf-8') as file:
                 return [line.strip() for line in file if line.strip()]
@@ -155,7 +144,6 @@ class AppController:
             return []
 
     def run(self):
-        """Основной цикл управления громкостью"""
         logger.info(f"Запуск приложения с настройками: player={music}, set_vol={SET_VOL}, normal_vol={NORMAL_VOL}")
         
         while True:
@@ -190,7 +178,6 @@ class AppController:
 
 
 if __name__ == "__main__":
-    # Настройка логгера с учетом языка из конфига
     log_format = "{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"
     if LANGUAGE == 'ru':
         log_format = "{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"
